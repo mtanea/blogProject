@@ -1,4 +1,4 @@
-export module postModule {
+
 
 export class Post {
   title: string;
@@ -12,5 +12,7 @@ export class Post {
     this.loveIts = 0;
     this.created_at = new Date();
   }
+
+
 }
-}
+

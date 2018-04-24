@@ -1,27 +1,42 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { PostService } from './../services/post.service';
+import { Post } from './../post.model';
+import { PostItemComponent } from './../post-item/post-item.component';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+
 
 @Component({
-  selector: 'app-post',
+  selector: 'app-post-list',
   templateUrl: './post-list.component.html',
   styleUrls: ['./post-list.component.css']
 })
-export class PostListComponent implements OnInit {
+export class PostListComponent implements OnInit, OnDestroy {
+  posts: Post[];
+  postsSubscription: Subscription;
 
-  @Input() postTitle : string;
-  @Input() postContent : string;
-  @Input() loveIts : number;
-  @Input() created_at : Date;
+  constructor(private postsService: PostService,
+               private router: Router) {}
 
+  ngOnInit (){
+    this.postsSubscription = this.postsService.postSubject.subscribe(
+      (posts:Post[]) => {
+        this.posts = posts;
+      }
+    );
 
-  onLike() {
-    this.loveIts++;
+    //emitPosts already called in getPosts ?
+    // this.postsService.getPosts();
+    this.postsService.emitPosts();
   }
-  onNotLike() {
-    this.loveIts--;
-  }
-  constructor() { }
 
-  ngOnInit() {
+  onFetch() {
+
+    this.postsService.getPosts();
+}
+  ngOnDestroy() {
+    this.postsSubscription.unsubscribe();
   }
+
 
 }
